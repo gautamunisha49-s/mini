@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up • Minimedia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #FBC5CD;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #4A1521;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px 0;
+        }
+
+        .box {
+            background-color: #FFFFFF;
+            border: 1px solid rgba(74, 21, 33, 0.1);
+            border-radius: 8px;
+            padding: 30px 30px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: #4A1521;
+        }
+
+        .tagline {
+            font-size: 14px;
+            font-weight: 700;
+            color: rgba(74, 21, 33, 0.6);
+            margin-bottom: 20px;
+            line-height: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            background: #FAFAFA;
+            border: 1px solid rgba(74, 21, 33, 0.2);
+            border-radius: 4px;
+            outline: none;
+            font-size: 12px;
+            color: #4A1521;
+        }
+
+        .form-group input:focus {
+            border-color: #4A1521;
+        }
+
+        .terms {
+            font-size: 11px;
+            color: rgba(74, 21, 33, 0.5);
+            margin-top: 15px;
+            line-height: 14px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: #4A1521;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: opacity 0.2s;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .switch-box {
+            background-color: #FFFFFF;
+            border: 1px solid rgba(74, 21, 33, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .switch-box a {
+            color: #4A1521;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .error-msg {
+            color: #E53935;
+            font-size: 12px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="box">
+            <div class="logo">MINIMEDIA</div>
+            <div class="tagline">Sign up to see photos and videos from your friends.</div>
+            
+            <form action="{% url 'register' %}" method="POST">
+                {% csrf_token %}
+
+                {% if error %}
+                    <div class="error-msg">{{ error }}</div>
+                {% endif %}
+
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Email address" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                
+                <p class="terms">
+                    By signing up, you agree to our Terms, Data Policy and Cookies Policy.
+                </p>
+
+                <button type="submit" class="submit-btn">Sign up</button>
+            </form>
+        </div>
+
+        <div class="switch-box">
+            Have an account? <a href="{% url 'login' %}">Log in</a>
+        </div>
+    </div>
+
+</body>
+</html>
