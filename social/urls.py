@@ -19,5 +19,5 @@ urlpatterns = [
     path('post/<int:post_id>/like/', views.like_post_view, name='like_post'),
     path('post/<int:post_id>/comment/', views.comment_post_view, name='comment_post'), 
     path('comment/<int:comment_id>/delete/', views.delete_comment_view, name='delete_comment'),
-
+    path('notifications/',views.notifications_view, name='notifications'),
 ]

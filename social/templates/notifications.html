@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Notifications</title>
+</head>
+
+<body>
+
+<h2>Notifications</h2>
+
+
+{% for n in notifications %}
+
+<p>
+{{ n.message }}
+</p>
+
+<small>
+{{ n.created_at }}
+</small>
+
+<hr>
+
+
+{% empty %}
+
+<p>No notifications</p>
+
+
+{% endfor %}
+
+
+
+</body>
+</html>
