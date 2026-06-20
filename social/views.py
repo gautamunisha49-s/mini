@@ -3,7 +3,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Post, Comment, Notification
+from .models import Post, Comment, Notification, Profile, Follow
+from django.contrib.auth.models import User
+from .models import Post
 
 
 
@@ -476,4 +478,161 @@ def delete_comment_view(request, comment_id):
 
     return redirect(
         f"/#post-{post_id}"
+    )
+
+#my partttttt
+#  PROFILE VIEW
+
+@login_required
+def profile_view(request, user_id):
+
+    user_obj = get_object_or_404(
+        User,
+        id=user_id
+    )
+
+    posts = Post.objects.filter(
+        user=user_obj
+    ).order_by('-id')
+
+    profile, created = Profile.objects.get_or_create(
+        user=user_obj
+    )
+
+    followers_count = Follow.objects.filter(
+        following=user_obj
+    ).count()
+
+    following_count = Follow.objects.filter(
+        follower=user_obj
+    ).count()
+
+    is_following = Follow.objects.filter(
+        follower=request.user,
+        following=user_obj
+    ).exists()
+
+    context = {
+        'profile_user': user_obj,
+        'profile': profile,
+        'posts': posts,
+        'followers_count': followers_count,
+        'following_count': following_count,
+        'is_following': is_following
+    }
+
+    return render(
+        request,
+        'profile.html',
+        context
+    )
+
+
+
+#  FOLLOW / UNFOLLOW
+
+@login_required
+def follow_user(request, user_id):
+
+    target = get_object_or_404(
+        User,
+        id=user_id
+    )
+
+    if request.user == target:
+        return redirect(
+            'profile',
+            user_id=user_id
+        )
+
+    follow_obj = Follow.objects.filter(
+        follower=request.user,
+        following=target
+    )
+
+    if follow_obj.exists():
+
+        follow_obj.delete()
+
+    else:
+
+        Follow.objects.create(
+            follower=request.user,
+            following=target
+        )
+
+    return redirect(
+        'profile',
+        user_id=user_id
+    )
+
+
+
+#  SEARCH USERS
+
+
+@login_required
+def search_user(request):
+
+    query = request.GET.get(
+        'q',
+        ''
+    )
+
+    users = User.objects.filter(
+        username__icontains=query
+    )
+
+    return render(
+        request,
+        'search.html',
+        {
+            'users': users,
+            'query': query
+        }
+    )
+
+
+
+#  EDIT PROFILE
+
+@login_required
+def edit_profile(request):
+
+    profile, created = Profile.objects.get_or_create(
+        user=request.user
+    )
+
+    if request.method == 'POST':
+
+        profile.bio = request.POST.get(
+            'bio'
+        )
+
+        if request.FILES.get(
+            'profile_picture'
+        ):
+
+            profile.profile_picture = request.FILES[
+                'profile_picture'
+            ]
+
+        profile.save()
+
+        messages.success(
+            request,
+            'Profile updated successfully!'
+        )
+
+        return redirect(
+            'profile',
+            user_id=request.user.id
+        )
+
+    return render(
+        request,
+        'edit_profile.html',
+        {
+            'profile': profile
+        }
     )
