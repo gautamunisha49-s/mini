@@ -1,155 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini Media - Premium Feed</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,600;1,600&family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,600;1,600&family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <style>
-        body { background-color: #FBC5CD; color: #332621; font-family: 'Plus Jakarta Sans', sans-serif; }
-        .brand-font { font-family: 'Playfair Display', serif; }
-        .bg-card { background-color: #FAF6EE; }
+        body {
+            background-color: #FBC5CD;
+            color: #332621;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .brand-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .bg-card {
+            background-color: #FAF6EE;
+        }
     </style>
 </head>
+
 <body class="min-h-screen pb-12">
 
-    <nav class="sticky top-0 z-50 bg-[#FAF6EE]/95 backdrop-blur-md border-b border-[#E4DDD3] px-6 py-3 shadow-sm flex items-center justify-between">
+    <nav
+        class="sticky top-0 z-50 bg-[#FAF6EE]/95 backdrop-blur-md border-b border-[#E4DDD3] px-6 py-3 shadow-sm flex items-center justify-between">
         <a href="{% url 'home' %}" class="brand-font text-3xl font-bold text-[#4A3933] tracking-wide italic">
             Mini<span class="text-[#E08E9B]">Media</span>
         </a>
-        
+
         <div class="flex items-center gap-5">
             <a href="{% url 'home' %}" class="text-2xl text-[#4A3933] hover:text-[#E08E9B] transition" title="Home">
                 <i class="bi bi-house-heart-fill"></i>
             </a>
-            
-            <a href="{% url 'create_post' %}" class="bg-[#E08E9B] text-white px-4 py-2 rounded-full font-bold text-sm hover:bg-[#c97b87] transition shadow-sm flex items-center gap-1">
+
+            <form method="GET" action="{% url 'home' %}" class="hidden md:flex items-center">
+                <div class="relative">
+                    <input type="text" name="q" placeholder="Search users..."
+                        class="pl-10 pr-4 py-2 rounded-full border border-[#E4DDD3] bg-white focus:outline-none focus:ring-2 focus:ring-[#E08E9B] w-64">
+
+                    <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </form>
+
+            <a href="{% url 'create_post' %}"
+                class="bg-[#E08E9B] text-white px-4 py-2 rounded-full font-bold text-sm hover:bg-[#c97b87] transition shadow-sm flex items-center gap-1">
                 <i class="bi bi-plus-circle-fill"></i> Create
             </a>
 
-            <a href="{% url 'notifications' %}" 
-   class="text-2xl text-[#4A3933] hover:text-red-500 transition relative" 
-   title="Notifications">
+            <a href="{% url 'notifications' %}" class="text-2xl text-[#4A3933] hover:text-red-500 transition relative"
+                title="Notifications">
 
-    <i class="bi bi-bell-fill"></i>
+                <i class="bi bi-bell-fill"></i>
 
-    {% if notifications %}
-        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-    {% endif %}
+                {% if notifications %}
+                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                {% endif %}
 
-</a>
+            </a>
             <div class="h-5 w-[1px] bg-gray-300"></div>
-            <span class="text-xs font-semibold text-gray-700 hidden sm:inline"><i class="bi bi-person-circle mr-1"></i>{{ request.user.username }}</span>
-            <a href="{% url 'logout' %}" class="text-xl text-red-400 hover:text-red-600 transition" title="Logout"><i class="bi bi-power"></i></a>
+
+            <div class="relative">
+
+                <button onclick="toggleMenu()" class="text-2xl text-[#4A3933] hover:text-[#E08E9B] transition">
+
+                    <i class="bi bi-list"></i>
+
+                </button>
+
+                <div id="menu"
+                    class="hidden absolute right-0 mt-3 w-60 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+
+                    <div class="p-4 text-center border-b">
+
+                        <div
+                            class="w-14 h-14 mx-auto rounded-full bg-[#FBC5CD] flex items-center justify-center text-2xl text-[#4A3933]">
+
+                            <i class="bi bi-person-fill"></i>
+
+                        </div>
+
+                        <p class="mt-2 font-bold">
+                            {{ request.user.username }}
+                        </p>
+
+                    </div>
+
+                    <a href="{% url 'profile' request.user.id %}"
+                        class="flex items-center gap-3 px-4 py-3 hover:bg-pink-50">
+
+                        <i class="bi bi-person-circle"></i>
+                        My Profile
+
+                    </a>
+
+                    <a href="{% url 'edit_profile' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-pink-50">
+
+                        <i class="bi bi-pencil-square"></i>
+                        Edit Profile
+
+                    </a>
+
+                    <a href="{% url 'create_post' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-pink-50">
+
+                        <i class="bi bi-plus-circle"></i>
+                        Create Post
+
+                    </a>
+
+                    <a href="{% url 'notifications' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-pink-50">
+
+                        <i class="bi bi-bell"></i>
+                        Notifications
+
+                    </a>
+
+                    <hr>
+
+                    <a href="{% url 'logout' %}" class="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50">
+
+                        <i class="bi bi-box-arrow-right"></i>
+                        Logout
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+
         </div>
     </nav>
 
     <div class="max-w-md mx-auto mt-8 px-4 space-y-8">
-        
+
         {% if messages %}
-            <div id="flash-message-container" class="fixed top-20 right-5 z-50 space-y-2">
-                {% for message in messages %}
-                    <div class="flash-message p-4 rounded-xl bg-green-50 text-green-700 text-xs font-bold border border-green-200 shadow-md transition duration-500">
-                        ✨ {{ message }}
-                    </div>
-                {% endfor %}
+        <div id="flash-message-container" class="fixed top-20 right-5 z-50 space-y-2">
+            {% for message in messages %}
+            <div
+                class="flash-message p-4 rounded-xl bg-green-50 text-green-700 text-xs font-bold border border-green-200 shadow-md transition duration-500">
+                ✨ {{ message }}
             </div>
+            {% endfor %}
+        </div>
         {% endif %}
 
         {% if posts %}
-            {% for post in posts %}
-                <div id="post-{{ post.id }}" class="bg-card border border-[#E4DDD3] rounded-3xl shadow-sm overflow-hidden transition duration-300 hover:shadow-md">
-                    
-                    <div class="p-4 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-pink-600 p-[2px]">
-                                <div class="w-full h-full bg-[#FAF6EE] rounded-full flex items-center justify-center font-bold text-[#4A3933]">
-                                    {{ post.user.username|slice:":1"|upper }}
-                                </div>
-                            </div>
-                            <span class="font-bold text-sm text-gray-800 tracking-tight">{{ post.user.username }}</span>
-                        </div>
-                        
-                        {% if post.user == request.user %}
-                        <div class="flex gap-3">
-                            <a href="{% url 'edit_post' post.id %}" class="text-gray-400 hover:text-blue-500 text-sm"><i class="bi bi-pencil-square"></i></a>
-                            <form action="{% url 'delete_post' post.id %}" method="post" class="inline" onsubmit="return confirm('Delete this beautiful memory?');">
-                                {% csrf_token %}
-                                <button type="submit" class="text-gray-400 hover:text-red-500 text-sm cursor-pointer"><i class="bi bi-trash3"></i></button>
-                            </form>
-                        </div>
-                        {% endif %}
-                    </div>
+        {% for post in posts %}
+        <div id="post-{{ post.id }}"
+            class="bg-card border border-[#E4DDD3] rounded-3xl shadow-sm overflow-hidden transition duration-300 hover:shadow-md">
 
-                    {% if post.image %}
-                        <div class="bg-black/5 flex items-center justify-center">
-                            <img src="{{ post.image.url }}" class="w-full h-auto max-h-[450px] object-cover" alt="Post">
-                        </div>
-                    {% endif %}
-
-                    <div class="p-5 space-y-3">
-                        <div class="flex items-center gap-4 text-2xl">
-                            <a href="{% url 'like_post' post.id %}" class="transform active:scale-125 transition duration-150">
-                                {% if request.user in post.likes.all %}
-                                    <i class="bi bi-heart-fill text-red-500 drop-shadow-sm"></i>
-                                {% else %}
-                                    <i class="bi bi-heart text-gray-800 hover:text-red-500"></i>
-                                {% endif %}
-                            </a>
-                            <i class="bi bi-chat-left-text text-gray-800 hover:text-[#E08E9B] cursor-pointer"></i>
-                        </div>
-
-                        <p class="text-sm font-extrabold text-gray-900 tracking-tight">{{ post.likes.count }} likes</p>
-                        <p class="text-sm text-gray-700 leading-relaxed"><span class="font-bold text-gray-900 mr-2">{{ post.user.username }}</span>{{ post.caption }}</p>
-
-                        {% if post.comments.all %}
-                        <div class="space-y-2 pt-2 border-t border-[#E4DDD3]/40 max-h-32 overflow-y-auto">
-                            {% for comment in post.comments.all %}
-                                <div class="flex items-center justify-between group">
-                                    <p class="text-xs text-gray-700">
-                                        <span class="font-bold text-gray-900 mr-1">{{ comment.user.username }}</span> {{ comment.text }}
-                                    </p>
-                                    
-                                    {% if comment.user == request.user or post.user == request.user %}
-                                        <a href="{% url 'delete_comment' comment.id %}" class="text-gray-400 hover:text-red-500 text-[10px] ml-2 opacity-0 group-hover:opacity-100 transition" title="Delete comment" onclick="return confirm('Delete this comment?');">
-                                            <i class="bi bi-x-circle-fill"></i>
-                                        </a>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-
-                        <div class="border-t border-[#E4DDD3]/60 my-2 pt-2">
-                            <form action="{% url 'comment_post' post.id %}" method="post" class="flex gap-2">
-                                {% csrf_token %}
-                                <input type="text" name="comment" placeholder="Add a sweet comment..." required
-                                       class="flex-1 px-4 py-2 text-xs bg-white/70 border border-[#E4DDD3] rounded-full focus:outline-none focus:ring-2 focus:ring-[#E08E9B] focus:bg-white mb-0">
-                                <button type="submit" class="bg-[#4A3933] text-[#FAF6EE] px-4 py-2 rounded-full text-xs font-bold hover:bg-black transition cursor-pointer">Post</button>
-                            </form>
+            <div class="p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-pink-600 p-[2px]">
+                        <div
+                            class="w-full h-full bg-[#FAF6EE] rounded-full flex items-center justify-center font-bold text-[#4A3933]">
+                            {{ post.user.username|slice:":1"|upper }}
                         </div>
                     </div>
+                    <span class="font-bold text-sm text-gray-800 tracking-tight">{{ post.user.username }}</span>
                 </div>
-            {% endfor %}
-        {% else %}
-            <div class="bg-card text-center p-12 rounded-3xl border border-[#E4DDD3]">
-                <i class="bi bi-heart-break text-5xl text-gray-300"></i>
-                <p class="mt-4 text-gray-600 font-semibold">Your feed is currently empty.</p>
-                <a href="{% url 'create_post' %}" class="mt-2 inline-block text-sm font-bold text-[#E08E9B] underline">Share your first post now!</a>
+
+                {% if post.user == request.user %}
+                <div class="flex gap-3">
+                    <a href="{% url 'edit_post' post.id %}" class="text-gray-400 hover:text-blue-500 text-sm"><i
+                            class="bi bi-pencil-square"></i></a>
+                    <form action="{% url 'delete_post' post.id %}" method="post" class="inline"
+                        onsubmit="return confirm('Delete this beautiful memory?');">
+                        {% csrf_token %}
+                        <button type="submit" class="text-gray-400 hover:text-red-500 text-sm cursor-pointer"><i
+                                class="bi bi-trash3"></i></button>
+                    </form>
+                </div>
+                {% endif %}
             </div>
+
+            {% if post.image %}
+            <div class="bg-black/5 flex items-center justify-center">
+                <img src="{{ post.image.url }}" class="w-full h-auto max-h-[450px] object-cover" alt="Post">
+            </div>
+            {% endif %}
+
+            <div class="p-5 space-y-3">
+                <div class="flex items-center gap-4 text-2xl">
+                    <a href="{% url 'like_post' post.id %}" class="transform active:scale-125 transition duration-150">
+                        {% if request.user in post.likes.all %}
+                        <i class="bi bi-heart-fill text-red-500 drop-shadow-sm"></i>
+                        {% else %}
+                        <i class="bi bi-heart text-gray-800 hover:text-red-500"></i>
+                        {% endif %}
+                    </a>
+                    <i class="bi bi-chat-left-text text-gray-800 hover:text-[#E08E9B] cursor-pointer"></i>
+                </div>
+
+                <p class="text-sm font-extrabold text-gray-900 tracking-tight">{{ post.likes.count }} likes</p>
+                <p class="text-sm text-gray-700 leading-relaxed"><span class="font-bold text-gray-900 mr-2">{{
+                        post.user.username }}</span>{{ post.caption }}</p>
+
+                {% if post.comments.all %}
+                <div class="space-y-2 pt-2 border-t border-[#E4DDD3]/40 max-h-32 overflow-y-auto">
+                    {% for comment in post.comments.all %}
+                    <div class="flex items-center justify-between group">
+                        <p class="text-xs text-gray-700">
+                            <span class="font-bold text-gray-900 mr-1">{{ comment.user.username }}</span> {{
+                            comment.text }}
+                        </p>
+
+                        {% if comment.user == request.user or post.user == request.user %}
+                        <a href="{% url 'delete_comment' comment.id %}"
+                            class="text-gray-400 hover:text-red-500 text-[10px] ml-2 opacity-0 group-hover:opacity-100 transition"
+                            title="Delete comment" onclick="return confirm('Delete this comment?');">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="border-t border-[#E4DDD3]/60 my-2 pt-2">
+                    <form action="{% url 'comment_post' post.id %}" method="post" class="flex gap-2">
+                        {% csrf_token %}
+                        <input type="text" name="comment" placeholder="Add a sweet comment..." required
+                            class="flex-1 px-4 py-2 text-xs bg-white/70 border border-[#E4DDD3] rounded-full focus:outline-none focus:ring-2 focus:ring-[#E08E9B] focus:bg-white mb-0">
+                        <button type="submit"
+                            class="bg-[#4A3933] text-[#FAF6EE] px-4 py-2 rounded-full text-xs font-bold hover:bg-black transition cursor-pointer">Post</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="bg-card text-center p-12 rounded-3xl border border-[#E4DDD3]">
+            <i class="bi bi-heart-break text-5xl text-gray-300"></i>
+            <p class="mt-4 text-gray-600 font-semibold">Your feed is currently empty.</p>
+            <a href="{% url 'create_post' %}" class="mt-2 inline-block text-sm font-bold text-[#E08E9B] underline">Share
+                your first post now!</a>
+        </div>
         {% endif %}
 
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            setTimeout(function() {
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
                 let container = document.getElementById('flash-message-container');
                 if (container) {
                     container.style.opacity = '0';
@@ -157,7 +262,27 @@
                 }
             }, 3000); // ३००० मिलिसेकेन्ड = ३ सेकेन्ड
         });
+
+
+        function toggleMenu() {
+            document.getElementById("menu").classList.toggle("hidden");
+        }
+
+        window.onclick = function (event) {
+
+            if (!event.target.closest("button")) {
+
+                let menu = document.getElementById("menu");
+
+                if (menu) {
+                    menu.classList.add("hidden");
+                }
+            }
+        }
+
+
     </script>
 
 </body>
+
 </html>
