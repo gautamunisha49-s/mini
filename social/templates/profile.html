@@ -1,62 +1,204 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile_user.username }}</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #FBC5CD;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .profile-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+       .profile-pic{
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    overflow:hidden;
+    border:4px solid #ff4fa3;
+    margin:auto;
+}
+
+.profile-pic img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.initial{
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:60px;
+    font-weight:bold;
+    background:white;
+    color:#4A1521;
+}
+
+        h1 {
+            margin-top: 15px;
+            color: #4A1521;
+        }
+
+        .bio {
+            margin-top: 10px;
+            color: #555;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .stats div {
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: #4A1521;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        .posts-title {
+            margin-bottom: 20px;
+            color: #4A1521;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+            gap: 20px;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,.08);
+        }
+
+        .post-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .caption {
+            padding: 12px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>{{ profile_user.username }}</h1>
+<div class="container">
 
-    <img src="{{ profile.profile_picture.url }}" width="150" height="150">
+    <div class="profile-card">
 
-    <p>{{ profile.bio }}</p>
+        <div class="profile-pic">
 
-    <h3>Followers: {{ followers_count }}</h3>
-    <h3>Following: {{ following_count }}</h3>
+    {% if profile.profile_picture %}
+        <img src="{{ profile.profile_picture.url }}">
+    {% else %}
+        <div class="initial">
+            {{ profile_user.username|first|upper }}
+        </div>
+    {% endif %}
 
-    {% if request.user != profile_user %}
+</div>
 
-    <a href="{% url 'follow' profile_user.id %}">
-        {% if is_following %}
-        Unfollow
-        {% else %}
-        Follow
+        <h1>{{ profile_user.username }}</h1>
+
+        <p class="bio">{{ profile.bio }}</p>
+
+        <div class="stats">
+            <div>
+                <h3>{{ followers_count }}</h3>
+                <p>Followers</p>
+            </div>
+
+            <div>
+                <h3>{{ following_count }}</h3>
+                <p>Following</p>
+            </div>
+        </div>
+
+        {% if request.user != profile_user %}
+            <a href="{% url 'follow' profile_user.id %}" class="btn">
+                {% if is_following %}
+                    Unfollow
+                {% else %}
+                    Follow
+                {% endif %}
+            </a>
         {% endif %}
-    </a>
 
-    {% endif %}
-
-    {% if request.user == profile_user %}
-    <br><br>
-
-    <a href="{% url 'edit_profile' %}">
-        Edit Profile
-    </a>
-    {% endif %}
-
-    <hr>
-
-    <h2>Posts</h2>
-
-    {% for post in posts %}
-
-    <div>
-
-        <img src="{{ post.image.url }}" width="250">
-
-        <p>{{ post.caption }}</p>
+        {% if request.user == profile_user %}
+            <br>
+            <a href="{% url 'edit_profile' %}" class="btn">
+                Edit Profile
+            </a>
+        {% endif %}
 
     </div>
 
-    <hr>
+    <h2 class="posts-title">Posts</h2>
 
-    {% empty %}
+    <div class="posts-grid">
 
-    <p>No posts yet.</p>
+        {% for post in posts %}
 
-    {% endfor %}
+        <div class="post-card">
+
+            <img src="{{ post.image.url }}">
+
+            <div class="caption">
+                {{ post.caption }}
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p>No posts yet.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
 </body>
-
 </html>

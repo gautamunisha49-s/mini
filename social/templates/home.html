@@ -163,12 +163,18 @@
 
             <div class="p-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-pink-600 p-[2px]">
-                        <div
-                            class="w-full h-full bg-[#FAF6EE] rounded-full flex items-center justify-center font-bold text-[#4A3933]">
-                            {{ post.user.username|slice:":1"|upper }}
-                        </div>
-                    </div>
+                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-400">
+
+    {% if post.user.profile.profile_picture %}
+        <img src="{{ post.user.profile.profile_picture.url }}"
+             class="w-full h-full object-cover">
+    {% else %}
+        <div class="w-full h-full flex items-center justify-center bg-white font-bold text-lg text-gray-700">
+            {{ post.user.username|first|upper }}
+        </div>
+    {% endif %}
+
+</div>
                     <span class="font-bold text-sm text-gray-800 tracking-tight">{{ post.user.username }}</span>
                 </div>
 
@@ -204,29 +210,48 @@
                     <i class="bi bi-chat-left-text text-gray-800 hover:text-[#E08E9B] cursor-pointer"></i>
                 </div>
 
-                <p class="text-sm font-extrabold text-gray-900 tracking-tight">{{ post.likes.count }} likes</p>
-                <p class="text-sm text-gray-700 leading-relaxed"><span class="font-bold text-gray-900 mr-2">{{
-                        post.user.username }}</span>{{ post.caption }}</p>
+ <p class="text-sm text-gray-700 leading-relaxed">
+    {{ post.caption }}
+</p>
 
+<p class="text-sm font-extrabold text-gray-900 tracking-tight">
+    {{ post.likes.count }} likes
+</p>
                 {% if post.comments.all %}
                 <div class="space-y-2 pt-2 border-t border-[#E4DDD3]/40 max-h-32 overflow-y-auto">
-                    {% for comment in post.comments.all %}
-                    <div class="flex items-center justify-between group">
-                        <p class="text-xs text-gray-700">
-                            <span class="font-bold text-gray-900 mr-1">{{ comment.user.username }}</span> {{
-                            comment.text }}
-                        </p>
 
-                        {% if comment.user == request.user or post.user == request.user %}
-                        <a href="{% url 'delete_comment' comment.id %}"
-                            class="text-gray-400 hover:text-red-500 text-[10px] ml-2 opacity-0 group-hover:opacity-100 transition"
-                            title="Delete comment" onclick="return confirm('Delete this comment?');">
-                            <i class="bi bi-x-circle-fill"></i>
-                        </a>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                </div>
+    {% for comment in post.comments.all %}
+
+    <div class="flex items-center justify-between group">
+
+        <p class="text-xs text-gray-700">
+
+            <span class="font-bold text-gray-900 mr-1">
+                {{ comment.user.username }}
+            </span>
+
+           {{ comment.text }}
+
+        </p>
+
+        {% if comment.user == request.user or post.user == request.user %}
+        <a href="{% url 'delete_comment' comment.id %}"
+            class="text-gray-400 hover:text-red-500 text-[10px] ml-2">
+            <i class="bi bi-x-circle-fill"></i>
+        </a>
+        {% endif %}
+
+    </div>
+
+    {% empty %}
+
+    <p class="text-xs text-gray-400">
+        No comments yet.
+    </p>
+
+    {% endfor %}
+
+</div>
                 {% endif %}
 
                 <div class="border-t border-[#E4DDD3]/60 my-2 pt-2">

@@ -95,43 +95,37 @@ def login_view(request):
 def register_view(request):
 
     if request.user.is_authenticated:
-
         return redirect('home')
-
 
     if request.method == 'POST':
 
         user_in = request.POST.get('username')
-
         email_in = request.POST.get('email')
-
         pass_in = request.POST.get('password')
 
-
-        if User.objects.filter(
-            username=user_in
-        ).exists():
+        if User.objects.filter(username=user_in).exists():
 
             return render(
                 request,
                 'register.html',
                 {
-                    'error':'Username is already taken'
+                    'error': 'Username is already taken'
                 }
             )
 
-
-        User.objects.create_user(
+        user = User.objects.create_user(
             username=user_in,
             email=email_in,
             password=pass_in
         )
 
+        Profile.objects.create(
+            user=user
+        )
 
         return redirect('login')
 
-
-    return render(request,'register.html')
+    return render(request, 'register.html')
 
 
 
@@ -163,6 +157,7 @@ def create_post_view(request):
             ''
         )
 
+        caption = caption.replace('{{', '').replace('}}', '')
 
         if image:
 
@@ -176,15 +171,12 @@ def create_post_view(request):
 
             )
 
-
             messages.success(
                 request,
                 "Post successfully uploaded!"
             )
 
-
             return redirect('home')
-
 
         else:
 
@@ -193,25 +185,18 @@ def create_post_view(request):
                 "Please select an image first."
             )
 
-
-
     return render(
         request,
         'create_post.html'
     )
 
 
-
-
 @login_required
 def edit_post_view(request, post_id):
 
-    post = get_object_or_404(
-        Post,
-        id=post_id
-    )
+    post = get_object_or_404(Post, id=post_id)
 
-
+    # ownership check
     if post.user != request.user:
 
         messages.error(
@@ -222,34 +207,31 @@ def edit_post_view(request, post_id):
         return redirect('home')
 
 
-
     if request.method == 'POST':
 
-        post.caption = request.POST.get(
-            'caption',
-            ''
-        )
+        post.caption = request.POST.get('caption', '')
 
+        # optional image update
+        image = request.FILES.get('image')
 
-        if request.FILES.get('image'):
-
-            post.image = request.FILES.get(
-                'image'
-            )
-
+        if image:
+            post.image = image
 
         post.save()
 
+        messages.success(
+            request,
+            "Post successfully updated!"
+        )
 
         return redirect('home')
 
 
-
     return render(
         request,
-        'create_post.html',
+        'edit_post.html',
         {
-            'post':post
+            'post': post
         }
     )
 
