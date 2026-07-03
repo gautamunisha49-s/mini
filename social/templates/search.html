@@ -1,43 +1,135 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Users</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        body {
+            background: #FBC5CD;
+        }
+
+        .card {
+            background: #FAF6EE;
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>Search Users</h1>
+    <div class="max-w-2xl mx-auto py-10 px-5">
 
-    <form method="GET">
+        <h1 class="text-3xl font-bold text-center mb-8 text-[#4A3933]">
+            Search Users
+        </h1>
 
-        <input type="text" name="q" placeholder="Search username" value="{{ query }}">
+        <form method="GET" action="{% url 'search' %}" class="mb-8">
 
-        <button type="submit">
-            Search
-        </button>
+            <div class="flex">
 
-    </form>
+                <input type="text" name="q" value="{{ query }}" placeholder="Search username..."
+                    class="flex-1 px-5 py-3 rounded-l-full border border-pink-300 focus:outline-none">
 
-    <hr>
+                <button type="submit" class="bg-pink-500 text-white px-6 rounded-r-full hover:bg-pink-600">
 
-    {% for user in users %}
+                    <i class="bi bi-search"></i>
 
-    <div>
+                </button>
 
-        <a href="{% url 'profile' user.id %}">
-            {{ user.username }}
-        </a>
+            </div>
+
+        </form>
+
+
+        {% if users %}
+
+        <div class="space-y-4">
+
+            {% for user in users %}
+
+            <a href="{% url 'profile' user.id %}">
+
+                <div class="card rounded-2xl shadow p-4 flex items-center justify-between hover:shadow-lg transition">
+
+                    <div class="flex items-center gap-4">
+
+                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-pink-400">
+
+                            {% if user.profile.profile_picture %}
+                            <img src="{{ user.profile.profile_picture.url }}" class="w-full h-full object-cover">
+                            {% else %}
+                            <div class="w-full h-full flex items-center justify-center bg-white font-bold text-xl">
+
+                                {{ user.username|first|upper }}
+
+                            </div>
+                            {% endif %}
+
+                        </div>
+
+                        <div>
+
+                            <h2 class="font-bold text-lg text-[#4A3933]">
+                                {{ user.username }}
+                            </h2>
+
+                            <p class="text-gray-500 text-sm">
+                                View Profile
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-chevron-right text-xl text-pink-500"></i>
+
+                </div>
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        {% if query %}
+
+        <div class="card rounded-2xl p-10 text-center shadow">
+
+            <i class="bi bi-search text-5xl text-pink-400"></i>
+
+            <p class="mt-4 text-lg font-semibold text-[#4A3933]">
+
+                No user found.
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
+        {% endif %}
+
+
+        <div class="mt-10 text-center">
+
+            <a href="{% url 'home' %}"
+                class="inline-block bg-[#4A3933] text-white px-6 py-3 rounded-full hover:bg-black">
+
+                ← Back to Home
+
+            </a>
+
+        </div>
 
     </div>
-
-    <br>
-
-    {% empty %}
-
-    <p>No users found.</p>
-
-    {% endfor %}
 
 </body>
 

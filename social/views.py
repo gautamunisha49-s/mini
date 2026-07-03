@@ -16,22 +16,25 @@ def home_view(request):
 
     posts = Post.objects.all().order_by('-id')
 
-
     notifications = Notification.objects.filter(
         receiver=request.user
-    ).order_by(
-        '-created_at'
-    )
+    ).order_by('-created_at')
 
+    query = request.GET.get('q', '')
+
+    users = []
+
+    if query:
+        users = User.objects.filter(
+            username__icontains=query
+        )
 
     context = {
-
         'posts': posts,
-
-        'notifications': notifications
-
+        'notifications': notifications,
+        'users': users,
+        'query': query,
     }
-
 
     return render(
         request,

@@ -30,35 +30,35 @@
             border-radius: 15px;
             text-align: center;
             margin-bottom: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
         }
 
-       .profile-pic{
-    width:140px;
-    height:140px;
-    border-radius:50%;
-    overflow:hidden;
-    border:4px solid #ff4fa3;
-    margin:auto;
-}
+        .profile-pic {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #ff4fa3;
+            margin: auto;
+        }
 
-.profile-pic img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-.initial{
-    width:100%;
-    height:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:60px;
-    font-weight:bold;
-    background:white;
-    color:#4A1521;
-}
+        .initial {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+            font-weight: bold;
+            background: white;
+            color: #4A1521;
+        }
 
         h1 {
             margin-top: 15px;
@@ -98,7 +98,7 @@
 
         .posts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
         }
 
@@ -106,7 +106,7 @@
             background: white;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,.08);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
         }
 
         .post-card img {
@@ -123,82 +123,83 @@
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <div class="profile-card">
+        <div class="profile-card">
 
-        <div class="profile-pic">
+            <div class="profile-pic">
 
-    {% if profile.profile_picture %}
-        <img src="{{ profile.profile_picture.url }}">
-    {% else %}
-        <div class="initial">
-            {{ profile_user.username|first|upper }}
-        </div>
-    {% endif %}
+                {% if profile.profile_picture %}
+                <img src="{{ profile.profile_picture.url }}">
+                {% else %}
+                <div class="initial">
+                    {{ profile_user.username|first|upper }}
+                </div>
+                {% endif %}
 
-</div>
-
-        <h1>{{ profile_user.username }}</h1>
-
-        <p class="bio">{{ profile.bio }}</p>
-
-        <div class="stats">
-            <div>
-                <h3>{{ followers_count }}</h3>
-                <p>Followers</p>
             </div>
 
-            <div>
-                <h3>{{ following_count }}</h3>
-                <p>Following</p>
-            </div>
-        </div>
+            <h1>{{ profile_user.username }}</h1>
 
-        {% if request.user != profile_user %}
+            <p class="bio">{{ profile.bio }}</p>
+
+            <div class="stats">
+                <div>
+                    <h3>{{ followers_count }}</h3>
+                    <p>Followers</p>
+                </div>
+
+                <div>
+                    <h3>{{ following_count }}</h3>
+                    <p>Following</p>
+                </div>
+            </div>
+
+            {% if request.user != profile_user %}
             <a href="{% url 'follow' profile_user.id %}" class="btn">
                 {% if is_following %}
-                    Unfollow
+                Unfollow
                 {% else %}
-                    Follow
+                Follow
                 {% endif %}
             </a>
-        {% endif %}
+            {% endif %}
 
-        {% if request.user == profile_user %}
+            {% if request.user == profile_user %}
             <br>
             <a href="{% url 'edit_profile' %}" class="btn">
                 Edit Profile
             </a>
-        {% endif %}
-
-    </div>
-
-    <h2 class="posts-title">Posts</h2>
-
-    <div class="posts-grid">
-
-        {% for post in posts %}
-
-        <div class="post-card">
-
-            <img src="{{ post.image.url }}">
-
-            <div class="caption">
-                {{ post.caption }}
-            </div>
+            {% endif %}
 
         </div>
 
-        {% empty %}
+        <h2 class="posts-title">Posts</h2>
 
-        <p>No posts yet.</p>
+        <div class="posts-grid">
 
-        {% endfor %}
+            {% for post in posts %}
+
+            <div class="post-card">
+
+                <img src="{{ post.image.url }}">
+
+                <div class="caption">
+                    {{ post.caption }}
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <p>No posts yet.</p>
+
+            {% endfor %}
+
+        </div>
 
     </div>
 
-</div>
-
 </body>
+
 </html>

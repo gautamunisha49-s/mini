@@ -44,15 +44,18 @@
                 <i class="bi bi-house-heart-fill"></i>
             </a>
 
-            <form method="GET" action="{% url 'home' %}" class="hidden md:flex items-center">
+            <form method="GET" action="{% url 'search' %}" class="hidden md:flex items-center">
+
                 <div class="relative">
+
                     <input type="text" name="q" placeholder="Search users..."
                         class="pl-10 pr-4 py-2 rounded-full border border-[#E4DDD3] bg-white focus:outline-none focus:ring-2 focus:ring-[#E08E9B] w-64">
 
                     <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                </div>
-            </form>
 
+                </div>
+
+            </form>
             <a href="{% url 'create_post' %}"
                 class="bg-[#E08E9B] text-white px-4 py-2 rounded-full font-bold text-sm hover:bg-[#c97b87] transition shadow-sm flex items-center gap-1">
                 <i class="bi bi-plus-circle-fill"></i> Create
@@ -165,16 +168,16 @@
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-400">
 
-    {% if post.user.profile.profile_picture %}
-        <img src="{{ post.user.profile.profile_picture.url }}"
-             class="w-full h-full object-cover">
-    {% else %}
-        <div class="w-full h-full flex items-center justify-center bg-white font-bold text-lg text-gray-700">
-            {{ post.user.username|first|upper }}
-        </div>
-    {% endif %}
+                        {% if post.user.profile.profile_picture %}
+                        <img src="{{ post.user.profile.profile_picture.url }}" class="w-full h-full object-cover">
+                        {% else %}
+                        <div
+                            class="w-full h-full flex items-center justify-center bg-white font-bold text-lg text-gray-700">
+                            {{ post.user.username|first|upper }}
+                        </div>
+                        {% endif %}
 
-</div>
+                    </div>
                     <span class="font-bold text-sm text-gray-800 tracking-tight">{{ post.user.username }}</span>
                 </div>
 
@@ -210,49 +213,49 @@
                     <i class="bi bi-chat-left-text text-gray-800 hover:text-[#E08E9B] cursor-pointer"></i>
                 </div>
 
- <p class="text-sm text-gray-700 leading-relaxed">
-    {{ post.caption }}
-</p>
+                <p class="text-sm text-gray-700 leading-relaxed">
+                    {{ post.caption }}
+                </p>
 
-<p class="text-sm font-extrabold text-gray-900 tracking-tight">
-    {{ post.likes.count }} likes
-</p>
+                <p class="text-sm font-extrabold text-gray-900 tracking-tight">
+                    {{ post.likes.count }} likes
+                </p>
 
                 {% if post.comments.all %}
                 <div class="space-y-2 pt-2 border-t border-[#E4DDD3]/40 max-h-32 overflow-y-auto">
 
-    {% for comment in post.comments.all %}
+                    {% for comment in post.comments.all %}
 
-    <div class="flex items-center justify-between group">
+                    <div class="flex items-center justify-between group">
 
-        <p class="text-xs text-gray-700">
+                        <p class="text-xs text-gray-700">
 
-            <span class="font-bold text-gray-900 mr-1">
-                {{ comment.user.username }}
-            </span>
+                            <span class="font-bold text-gray-900 mr-1">
+                                {{ comment.user.username }}
+                            </span>
 
-           {{ comment.text }}
+                            {{ comment.text }}
 
-        </p>
+                        </p>
 
-        {% if comment.user == request.user or post.user == request.user %}
-        <a href="{% url 'delete_comment' comment.id %}"
-            class="text-gray-400 hover:text-red-500 text-[10px] ml-2">
-            <i class="bi bi-x-circle-fill"></i>
-        </a>
-        {% endif %}
+                        {% if comment.user == request.user or post.user == request.user %}
+                        <a href="{% url 'delete_comment' comment.id %}"
+                            class="text-gray-400 hover:text-red-500 text-[10px] ml-2">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </a>
+                        {% endif %}
 
-    </div>
+                    </div>
 
-    {% empty %}
+                    {% empty %}
 
-    <p class="text-xs text-gray-400">
-        No comments yet.
-    </p>
+                    <p class="text-xs text-gray-400">
+                        No comments yet.
+                    </p>
 
-    {% endfor %}
+                    {% endfor %}
 
-</div>
+                </div>
                 {% endif %}
 
                 <div class="border-t border-[#E4DDD3]/60 my-2 pt-2">
