@@ -9,9 +9,7 @@ from .models import Post
 
 
 
-# ==========================================
-# 🏠 MAIN FEED / HOME VIEW
-# ==========================================
+#home view
 
 @login_required(login_url='login')
 def home_view(request):
@@ -43,11 +41,7 @@ def home_view(request):
 
 
 
-
-# ==========================================
-# 👥 AUTHENTICATION
-# ==========================================
-
+#authentication
 
 def login_view(request):
 
@@ -140,10 +134,7 @@ def logout_view(request):
 
 
 
-# ==========================================
-# 📸 POST MANAGEMENT
-# ==========================================
-
+#post management
 
 @login_required
 def create_post_view(request):
@@ -259,10 +250,7 @@ def delete_post_view(request, post_id):
 
 
 
-# ==========================================
-# ❤️ LIKE SYSTEM
-# ==========================================
-
+#like system
 
 @login_required
 def like_post_view(request, post_id):
@@ -314,11 +302,7 @@ def like_post_view(request, post_id):
 
 
 
-
-# ==========================================
-# 💬 COMMENT SYSTEM
-# ==========================================
-
+#comment system
 
 @login_required
 def comment_post_view(request, post_id):
@@ -387,10 +371,7 @@ def comment_post_view(request, post_id):
 
 
 
-# ==========================================
-# 🔔 NOTIFICATIONS VIEW
-# ==========================================
-
+##notification view
 
 @login_required
 def notifications_view(request):
@@ -417,11 +398,7 @@ def notifications_view(request):
 
 
 
-
-# ==========================================
-# ❌ DELETE COMMENT
-# ==========================================
-
+#delete comment
 
 @login_required
 def delete_comment_view(request, comment_id):

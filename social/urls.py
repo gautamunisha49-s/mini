@@ -10,7 +10,7 @@ urlpatterns = [
 
 # meeeeee
     
-    # Tapaiko Post ko naya paths:
+    # post ko naya path haru
     # path('feed/', views.feed_view, name='feed'),
     path('post/new/', views.create_post_view, name='create_post'),
     path('post/<int:post_id>/edit/', views.edit_post_view, name='edit_post'),

@@ -8,17 +8,17 @@ class Post(models.Model):
     caption = models.TextField(max_length=500, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
-    # 🔴 यहाँ थपियो: लाइकका लागि Many-to-Many field (इन्स्टाग्राम जस्तै रातो मुटु बनाउन)
+    # like maa heart ko chitra
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
 
     class Meta:
-        ordering = ['-created_at']  # Naya post sadhai mathi dekhinchha
+         ordering = ['-created_at']  
 
     def __str__(self):
         return f"{self.user.username}'s post - {self.created_at.strftime('%Y-%m-%d')}"
 
 
-# 💬 यहाँ थपियो: कमेन्ट सेभ गर्नका लागि नयाँ मोडल
+#  comment save garna naya model banayeko
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -26,14 +26,11 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['created_at'] # पुराना कमेन्ट माथि, नयाँ तल आउँछन्
+        ordering = ['created_at'] # purana commenet maathi , naya tala dekhinchha
 
     def __str__(self):
         return f"{self.user.username}: {self.text[:20]}"
     
-
-
-
     #interactions
     from django.contrib.auth.models import User
 
@@ -66,11 +63,8 @@ class Notification(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True
     )
-
-
     def __str__(self):
         return self.message
-   
    
    #mypartttt
    

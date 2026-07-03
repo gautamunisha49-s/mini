@@ -5,9 +5,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('social.urls')), # यसले सिधै सामाजिक एपको urls.py लाई लिङ्क गर्छ
+    path('', include('social.urls')), # urls.py maa link garxa (Social app lai)
 ]
 
-# इमेज र मिडिया फाइलहरू लोड गर्नका लागि
+# image and media load garna ko lagi
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
