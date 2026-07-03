@@ -32,8 +32,6 @@ class Comment(models.Model):
         return f"{self.user.username}: {self.text[:20]}"
     
     #interactions
-    from django.contrib.auth.models import User
-
 
 class Notification(models.Model):
 

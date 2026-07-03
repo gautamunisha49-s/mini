@@ -496,39 +496,32 @@ def profile_view(request, user_id):
 @login_required
 def follow_user(request, user_id):
 
-    target = get_object_or_404(
-        User,
-        id=user_id
-    )
+    target = get_object_or_404(User, id=user_id)
 
     if request.user == target:
-        return redirect(
-            'profile',
-            user_id=user_id
-        )
+        return redirect('profile', user_id=user_id)
 
-    follow_obj = Follow.objects.filter(
+    follow = Follow.objects.filter(
         follower=request.user,
         following=target
     )
 
-    if follow_obj.exists():
-
-        follow_obj.delete()
+    if follow.exists():
+        follow.delete()
 
     else:
-
         Follow.objects.create(
             follower=request.user,
             following=target
         )
 
-    return redirect(
-        'profile',
-        user_id=user_id
-    )
+        Notification.objects.create(
+            sender=request.user,
+            receiver=target,
+            message=f"{request.user.username} started following you."
+        )
 
-
+    return redirect('profile', user_id=user_id)
 
 #  SEARCH USERS
 
