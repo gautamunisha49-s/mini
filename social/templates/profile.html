@@ -129,7 +129,7 @@
 
             <div class="profile-pic">
 
-                {% if profile.profile_picture %}
+                {% if profile.profile_picture and profile.profile_picture.name %}
                 <img src="{{ profile.profile_picture.url }}">
                 {% else %}
                 <div class="initial">
