@@ -231,7 +231,6 @@ def edit_post_view(request, post_id):
 
 
 
-
 @login_required
 def delete_post_view(request, post_id):
 
@@ -247,8 +246,6 @@ def delete_post_view(request, post_id):
 
 
     return redirect('home')
-
-
 
 
 
@@ -300,8 +297,6 @@ def like_post_view(request, post_id):
     return redirect(
         f"/#post-{post.id}"
     )
-
-
 
 
 
@@ -370,10 +365,6 @@ def comment_post_view(request, post_id):
 
 
 
-
-
-
-
 ##notification view
 
 @login_required
@@ -395,10 +386,6 @@ def notifications_view(request):
             'notifications':notifications
         }
     )
-
-
-
-
 
 
 #delete comment
