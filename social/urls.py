@@ -18,10 +18,10 @@ urlpatterns = [
     path('comment/<int:comment_id>/delete/', views.delete_comment_view, name='delete_comment'),
 
     path('notifications/', views.notifications_view, name='notifications'),
-
     path('profile/<int:user_id>/', views.profile_view, name='profile'),
     path('edit-profile/', views.edit_profile, name='edit_profile'),
 
     path('search/', views.search_user, name='search'),
     path('follow/<int:user_id>/', views.follow_user, name='follow'),
+    path('toggle-dark-mode/', views.toggle_dark_mode, name='dark_mode'),
 ]

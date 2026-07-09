@@ -6,164 +6,325 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign up • Minimedia</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
         }
 
-        body {
-            background-color: #FBC5CD;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        /* 1. Light Mode Default Colors */
+        :root {
+            --bg-color: #FBC5CD;
+            --text-color: #4A1521;
+            --box-bg: #ffffff;
+            --input-bg: #fafafa;
+            --input-border: rgba(74,21,33,.2);
+            --switch-text: #333333;
+        }
+
+        /* 2. Dark Mode Overrides */
+        .dark, [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #FAF6EE;
+            --box-bg: #1E1E1E;
+            --input-bg: #2d2d2d;
+            --input-border: #444444;
+            --switch-text: #aaaaaa;
+        }
+
+        body{
+            background: var(--bg-color);
             min-height: 100vh;
-            color: #4A1521;
+            color: var(--text-color);
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
-        .auth-container {
-            width: 100%;
-            max-width: 350px;
+        .page{
+            width:100%;
+            min-height:100vh;
+            background: var(--bg-color);
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:40px 90px;
+        }
+
+        .left{
+            width:50%;
+        }
+
+        .right{
+            width:50%;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content: center;
+        }
+
+        .quote{
+            margin-left:40px;
+            font-size: 45px;
+            font-family: Georgia, serif;
+            font-weight:bold;
+        }
+
+        .quote h1{
+            font-size:45px;
+            font-family:Georgia,serif;
+            line-height:1.25;
+            color:#22070e;
+            font-weight:bold;
+            margin-left: 80px;
+        }
+        .quote span{
+            color:#ba6b7d;
+        }
+
+        .art{
+            margin-top:50px;
+            position:relative;
+            width:420px;
+            height:330px;
+        }
+
+        .hearts{
+            position:absolute;
+            left:-35px;
+            top:45px;
+            width:120px;
+            z-index:3;
+        }
+
+        .back-photo{
+            position:absolute;
+            left:80px;
+            top:55px;
+            width:180px;
+            opacity:.80;
+            transform:rotate(-20deg);
+            border-radius:25px;
+        }
+
+        .phone{
+            position:absolute;
+            left:165px;
+            top:0;
+            width:190px;
+            z-index:2;
+            border-radius:25px;
+            border-color: #853b4d;
+        }
+
+        /* RIGHT SIDE CSS FIXES */
+        .auth-container{
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            padding: 20px 0;
+            align-items: center;
+            width: 100%;
         }
 
-        .box {
-            background-color: #FFFFFF;
-            border: 1px solid rgba(74, 21, 33, 0.1);
-            border-radius: 8px;
-            padding: 30px 30px;
+        .box{
+            width:400px;
+            background: white;
+            padding: 45px;
+            border-radius:25px;
+            box-shadow: 0 10px 30px rgba(74,21,33,0.05);
+            margin-bottom: 20px;
+        }
+
+        .logo{
+            font-size:40px;
+            font-weight:900;
+            color:#4A1521;
+            margin-bottom:15px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            color: #4A1521;
         }
 
         .tagline {
             font-size: 14px;
             font-weight: 700;
             color: rgba(74, 21, 33, 0.6);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             line-height: 18px;
+            text-align: center;
         }
 
-        .form-group {
-            margin-bottom: 8px;
+        .dark .tagline, [data-theme="dark"] .tagline {
+            color: #aaaaaa;
         }
 
-        .form-group input {
-            width: 100%;
-            padding: 10px 12px;
-            background: #FAFAFA;
-            border: 1px solid rgba(74, 21, 33, 0.2);
-            border-radius: 4px;
-            outline: none;
-            font-size: 12px;
-            color: #4A1521;
+        input{
+            width:100%;
+            height:50px;
+            margin-bottom:18px;
+            border-radius:8px;
+            border:1px solid #ddd;
+            padding-left:15px;
+            background: var(--input-bg);
+            color: var(--text-color);
         }
 
-        .form-group input:focus {
-            border-color: #4A1521;
+        button{
+            width:100%;
+            height:50px;
+            background:#541523;
+            color:white;
+            border:none;
+            border-radius:8px;
+            font-size:20px;
+            font-weight:bold;
+            cursor: pointer;
         }
 
         .terms {
-            font-size: 11px;
-            color: rgba(74, 21, 33, 0.5);
-            margin-top: 15px;
-            line-height: 14px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            background-color: #4A1521;
-            color: #FFFFFF;
-            border: none;
-            padding: 8px;
-            border-radius: 4px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: opacity 0.2s;
-        }
-
-        .submit-btn:hover {
-            opacity: 0.9;
-        }
-
-        .switch-box {
-            background-color: #FFFFFF;
-            border: 1px solid rgba(74, 21, 33, 0.1);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .switch-box a {
-            color: #4A1521;
-            text-decoration: none;
-            font-weight: 700;
-        }
-
-        .error-msg {
-            color: #E53935;
             font-size: 12px;
+            color: rgba(74, 21, 33, 0.5);
+            margin-top: 5px;
+            margin-bottom: 18px;
+            line-height: 16px;
+            text-align: center;
+        }
+
+        .dark .terms, [data-theme="dark"] .terms {
+            color: #777777;
+        }
+
+        .switch-box{
+            width:400px;
+            background: white;
+            border-radius:22px;
+            padding:22px;
+            text-align:center;
+            box-shadow: 0 4px 15px rgba(74,21,33,0.03);
+        }
+
+        .switch-box a{
+            color: var(--text-color);
+            font-weight: 700;
+            text-decoration: none;
+            margin-left: 3px;
+        }
+
+        .switch-box a:hover {
+            text-decoration: underline;
+        }
+
+        .error{
+            color: #E53935;
+            font-size: 13px;
             margin-bottom: 15px;
             font-weight: 600;
+            text-align: center;
         }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-color);
+            opacity: 0.6;
+            font-size: 18px;
+            transition: opacity 0.15s ease;
+        }
+
+        .toggle-password:hover {
+            opacity: 1;
+        }
+
     </style>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye-slash-fill');
+                icon.classList.add('bi-eye-fill');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-fill');
+                icon.classList.add('bi-eye-slash-fill');
+            }
+        }
+    </script>
 </head>
 
 <body>
 
-    <div class="auth-container">
-        <div class="box">
-            <div class="logo">MINIMEDIA</div>
-            <div class="tagline">Sign up to see photos and videos from your friends.</div>
+<div class="page">
 
-            <form action="{% url 'register' %}" method="POST">
-                {% csrf_token %}
-
-                {% if error %}
-                <div class="error-msg">{{ error }}</div>
-                {% endif %}
-
-                <div class="form-group">
-                    <input type="email" name="email" placeholder="Email address" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" name="username" placeholder="Username" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password" placeholder="Password" required>
-                </div>
-
-                <p class="terms">
-                    By signing up, you agree to our Terms, Data Policy and Cookies Policy.
-                </p>
-
-                <button type="submit" class="submit-btn">Sign up</button>
-            </form>
+    <div class="left">
+        <div class="quote">
+            <h1 class="line1">"The creative minds</h1>
+            <h1 class="line2">behind the screen."</h1>
         </div>
 
-        <div class="switch-box">
-            Have an account? <a href="{% url 'login' %}">Log in</a>
+        <div class="art">
+            <img src="{% static 'images/heart.jpg' %}" class="hearts" alt="hearts">
+
+            <img src="{% static 'images/sit.jpg' %}" class="back-photo" alt="back-photo">
+
+            <img src="{% static 'images/main.jpg' %}" class="phone" alt="phone">
         </div>
     </div>
 
-</body>
+    <div class="right">
+        <div class="auth-container">
 
+            <div class="box">
+                <div class="logo">MINIMEDIA</div>
+                <div class="tagline">Sign up to see photos and videos from your friends.</div>
+
+                {% if error %}
+                <div class="error">{{ error }}</div>
+                {% endif %}
+
+                <form action="{% url 'register' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="email" name="email" placeholder="Email address" required>
+                    <input type="text" name="username" placeholder="Username" required>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="register-password" placeholder="Password" required>
+                        <i class="bi bi-eye-slash-fill toggle-password" id="register-password-toggle" onclick="togglePassword('register-password', 'register-password-toggle')"></i>
+                    </div>
+
+                    <p class="terms">
+                        By signing up, you agree to our Terms, Data Policy and Cookies Policy.
+                    </p>
+
+                    <button type="submit">Sign up</button>
+                </form>
+            </div>
+
+            <div class="switch-box">
+                Have an account?
+                <a href="{% url 'login' %}">Log in</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
 </html>

@@ -1,176 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile • MiniMedia</title>
+{% block title %}Edit Profile • MiniMedia{% endblock %}
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+{% block content_width %}max-w-xl mx-auto{% endblock %}
 
-        body {
-            background: #FBC5CD;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
-        }
+{% block extra_style %}
+    .ep-card {
+        background: var(--card-bg);
+        padding: 30px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-        .container {
-            width: 100%;
-            max-width: 500px;
-        }
+    .ep-title {
+        text-align: center;
+        color: var(--text-color);
+        font-size: 30px;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
 
-       .card{
-    background:white;
-    padding:30px;
-    border:1px solid rgba(74,21,33,.1);
-    border-radius:8px;
-}
+    .ep-subtitle {
+        text-align: center;
+        color: var(--text-color);
+        opacity: 0.6;
+        margin-bottom: 25px;
+    }
 
-        .title {
-            text-align: center;
-            color: #4A1521;
-            font-size: 30px;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
+    .ep-form-group {
+        margin-bottom: 20px;
+    }
 
-        .subtitle {
-            text-align: center;
-            color: #777;
-            margin-bottom: 25px;
-        }
+    .ep-card label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text-color);
+    }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+    .ep-card textarea,
+    .ep-card input[type="file"] {
+        width: 100%;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #4A1521;
-        }
+    .ep-card textarea {
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 12px;
+        resize: none;
+        font-size: 14px;
+        outline: none;
+        background-color: var(--input-bg);
+        color: var(--text-color);
+    }
 
-        textarea,
-        input[type="file"] {
-            width: 100%;
-        }
+    .ep-card textarea:focus {
+        border-color: #4A1521;
+    }
 
-        textarea {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 12px;
-            resize: none;
-            font-size: 14px;
-            outline: none;
-        }
+    .ep-card input[type="file"] {
+        color: var(--text-color);
+    }
 
-        textarea:focus {
-            border-color: #4A1521;
-        }
+    .ep-preview {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-        .preview {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .ep-preview img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #FBC5CD;
+    }
 
-        .preview img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #FBC5CD;
-        }
+    .ep-save-btn {
+        background: #E08E9B;
+        color: white;
+        border-radius: 4px;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: .3s;
+    }
 
-        .save-btn{
-    background:#4A1521;
-    color:white;
-    border-radius:4px;
-}
-        .save-btn:hover {
-            transform: translateY(-2px);
-            opacity: .95;
+    .dark .ep-save-btn, [data-theme="dark"] .ep-save-btn {
+        background: #E08E9B;
+        color: white;
+    }
 
-        }
+    .ep-save-btn:hover {
+        background: #c97b87;
+        transform: translateY(-2px);
+        opacity: .95;
+    }
 
-            .initial-circle{
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    background:white;
-    border:4px solid #FBC5CD;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin:auto;
-    font-size:48px;
-    font-weight:700;
-    color:#4A1521;
-}
-        
-    </style>
-</head>
+    .initial-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: var(--input-bg);
+        border: 4px solid #FBC5CD;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+        font-size: 48px;
+        font-weight: 700;
+        color: var(--text-color);
+    }
+{% endblock %}
 
-<body>
+{% block content %}
 
-    <div class="container">
+    <div class="ep-card">
+        <h1 class="ep-title">Edit Profile</h1>
+        <p class="ep-subtitle">Update your profile information</p>
 
-        <div class="card">
-
-            <h1 class="title">Edit Profile</h1>
-
-            <p class="subtitle">
-                Update your profile information
-            </p>
-
-            <div class="preview">
-
-    {% if profile.profile_picture %}
-        <img src="{{ profile.profile_picture.url }}" alt="Profile">
-    {% else %}
-        <div class="initial-circle">
-            {{ request.user.username|first|upper }}
-        </div>
-    {% endif %}
-
-</div>
-
-            <form method="POST" enctype="multipart/form-data">
-
-                {% csrf_token %}
-
-                <div class="form-group">
-                    <label>Bio</label>
-
-                    <textarea name="bio" rows="5"
-                        placeholder="Tell people about yourself...">{{ profile.bio }}</textarea>
+        <div class="ep-preview">
+            {% if profile.profile_picture %}
+                <img src="{{ profile.profile_picture.url }}" alt="Profile">
+            {% else %}
+                <div class="initial-circle">
+                    {{ request.user.username|first|upper }}
                 </div>
-
-                <div class="form-group">
-                    <label>Change Profile Picture</label>
-
-                    <input type="file" name="profile_picture">
-                </div>
-
-                <button type="submit" class="save-btn">
-                    Save Changes
-                </button>
-
-            </form>
-
+            {% endif %}
         </div>
 
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="ep-form-group">
+                <label>Bio</label>
+                <textarea name="bio" rows="5" placeholder="Tell people about yourself...">{{ profile.bio }}</textarea>
+            </div>
+
+            <div class="ep-form-group">
+                <label>Change Profile Picture</label>
+                <input type="file" name="profile_picture">
+            </div>
+
+            <button type="submit" class="ep-save-btn">
+                Save Changes
+            </button>
+        </form>
     </div>
 
-</body>
-
-</html>
+{% endblock %}

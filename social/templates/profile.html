@@ -1,162 +1,200 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ profile_user.username }}</title>
+{% block title %}{{ profile_user.username }} • MiniMedia{% endblock %}
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+{% block content_width %}max-w-4xl mx-auto{% endblock %}
 
-        body {
-            background: #FBC5CD;
-            padding: 30px;
-        }
+{% block extra_style %}
+    .profile-card {
+        background: var(--card-bg);
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
+    .profile-pic {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid #E08E9B;
+        margin: auto;
+        background: #ffffff;
+    }
 
-        .profile-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-        }
+    .dark .profile-pic, [data-theme="dark"] .profile-pic {
+        border-color: #E08E9B;
+    }
 
-        .profile-pic {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 4px solid #ff4fa3;
-            margin: auto;
-        }
+    .profile-pic img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
-        .profile-pic img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    .initial {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 60px;
+        font-weight: bold;
+        background: var(--card-bg);
+        color: var(--text-color);
+    }
 
-        .initial {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 60px;
-            font-weight: bold;
-            background: white;
-            color: #4A1521;
-        }
+    .profile-card h1 {
+        margin-top: 15px;
+        color: var(--text-color);
+        font-size: 26px;
+    }
 
-        h1 {
-            margin-top: 15px;
-            color: #4A1521;
-        }
+    .bio {
+        margin-top: 10px;
+        color: var(--text-color);
+        opacity: 0.75;
+        font-size: 15px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.4;
+    }
 
-        .bio {
-            margin-top: 10px;
-            color: #555;
-        }
+    .stats {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 20px;
+    }
 
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 20px;
-        }
+    .stats div h3 {
+        font-size: 20px;
+        color: var(--text-color);
+    }
 
-        .stats div {
-            text-align: center;
-        }
+    .stats div p {
+        font-size: 14px;
+        color: var(--text-color);
+        opacity: 0.7;
+    }
 
-        .btn {
-            display: inline-block;
-            margin-top: 20px;
-            background: #4A1521;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 8px;
-            text-decoration: none;
-        }
+    .profile-btn {
+        display: inline-block;
+        margin-top: 20px;
+        background: #E08E9B;
+        color: white;
+        padding: 10px 24px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        transition: background 0.2s ease, transform 0.1s ease;
+    }
 
-        .posts-title {
-            margin-bottom: 20px;
-            color: #4A1521;
-        }
+    .dark .profile-btn, [data-theme="dark"] .profile-btn {
+        background: #E08E9B;
+        color: white;
+    }
 
-        .posts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
+    .profile-btn:hover {
+        background: #c97b87;
+        opacity: 0.9;
+    }
 
-        .post-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
-        }
+    .profile-btn:active {
+        transform: scale(0.98);
+    }
 
-        .post-card img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-        }
+    .posts-title {
+        margin-bottom: 20px;
+        color: var(--text-color);
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        .caption {
-            padding: 12px;
-        }
-    </style>
-</head>
+    .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 20px;
+    }
 
-<body>
+    .post-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+        transition: transform 0.2s ease;
+    }
 
-    <div class="container">
+    .post-card:hover {
+        transform: translateY(-2px);
+    }
 
-        <div class="profile-card">
+    .post-card img {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+        display: block;
+    }
 
-            <div class="profile-pic">
+    .post-card .caption {
+        padding: 15px;
+        font-size: 14px;
+        color: var(--text-color);
+        opacity: 0.8;
+        line-height: 1.4;
+    }
 
-                {% if profile.profile_picture and profile.profile_picture.name %}
-                <img src="{{ profile.profile_picture.url }}">
-                {% else %}
-                <div class="initial">
-                    {{ profile_user.username|first|upper }}
-                </div>
-                {% endif %}
+    .no-posts {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 40px;
+        color: var(--text-color);
+        opacity: 0.7;
+        font-size: 16px;
+    }
+{% endblock %}
 
+{% block content %}
+
+    <div class="profile-card">
+        <div class="profile-pic">
+            {% if profile.profile_picture and profile.profile_picture.name %}
+            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture">
+            {% else %}
+            <div class="initial">
+                {{ profile_user.username|first|upper }}
             </div>
+            {% endif %}
+        </div>
 
-            <h1>{{ profile_user.username }}</h1>
+        <h1>{{ profile_user.username }}</h1>
 
-            <p class="bio">{{ profile.bio }}</p>
+        {% if profile.bio %}
+        <p class="bio">{{ profile.bio }}</p>
+        {% else %}
+        <p class="bio" style="font-style: italic; opacity: 0.6;">No bio available.</p>
+        {% endif %}
 
-            <div class="stats">
-                <div>
-                    <h3>{{ followers_count }}</h3>
-                    <p>Followers</p>
-                </div>
-
-                <div>
-                    <h3>{{ following_count }}</h3>
-                    <p>Following</p>
-                </div>
+        <div class="stats">
+            <div>
+                <h3>{{ followers_count }}</h3>
+                <p>Followers</p>
             </div>
+            <div>
+                <h3>{{ following_count }}</h3>
+                <p>Following</p>
+            </div>
+        </div>
 
+        <div class="actions">
             {% if request.user != profile_user %}
-            <a href="{% url 'follow' profile_user.id %}" class="btn">
+            <a href="{% url 'follow' profile_user.id %}" class="profile-btn">
                 {% if is_following %}
                 Unfollow
                 {% else %}
@@ -166,40 +204,33 @@
             {% endif %}
 
             {% if request.user == profile_user %}
-            <br>
-            <a href="{% url 'edit_profile' %}" class="btn">
-                Edit Profile
+            <a href="{% url 'edit_profile' %}" class="profile-btn">
+                <i class="bi bi-pencil-square"></i> Edit Profile
             </a>
             {% endif %}
-
         </div>
-
-        <h2 class="posts-title">Posts</h2>
-
-        <div class="posts-grid">
-
-            {% for post in posts %}
-
-            <div class="post-card">
-
-                <img src="{{ post.image.url }}">
-
-                <div class="caption">
-                    {{ post.caption }}
-                </div>
-
-            </div>
-
-            {% empty %}
-
-            <p>No posts yet.</p>
-
-            {% endfor %}
-
-        </div>
-
     </div>
 
-</body>
+    <h2 class="posts-title">
+        <i class="bi bi-grid-3x3-gap"></i> Posts
+    </h2>
 
-</html>
+    <div class="posts-grid">
+        {% for post in posts %}
+        <div class="post-card">
+            {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Post Image">
+            {% endif %}
+            <div class="caption">
+                {{ post.caption }}
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-posts">
+            <i class="bi bi-camera" style="font-size: 32px; display: block; margin-bottom: 8px;"></i>
+            <p>No posts yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

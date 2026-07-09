@@ -1,0 +1,408 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mini Media{% endblock %}</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @custom-variant dark (&:where(.dark, .dark *));
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,600;1,600&family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 1. Light Mode Default Colors */
+        :root {
+            --bg-color: #FBC5CD; 
+            --text-color: #332621;
+            --card-bg: #FAF6EE;
+            --nav-bg: #FAF6EE;
+            --border-color: #E4DDD3;
+            --input-bg: #ffffff;
+        }
+
+        /* 2. Dark Mode Overrides */
+        .dark, [data-theme="dark"] {
+            --bg-color: #121212; 
+            --text-color: #FAF6EE;
+            --card-bg: #1E1E1E; 
+            --nav-bg: #1E1E1E;
+            --border-color: #2D2D2D;
+            --input-bg: #2D2D2D;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .brand-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .bg-card {
+            background-color: var(--card-bg) !important;
+            color: var(--text-color) !important;
+            border-color: var(--border-color) !important;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Tailwind overrides to ensure elements play nice with your theme */
+        .dark .bg-white, [data-theme="dark"] .bg-white {
+            background-color: var(--card-bg) !important;
+            color: var(--text-color) !important;
+        }
+
+        /* Elements text override inside dark mode */
+        .dark nav a, .dark nav button, .dark p, .dark span:not(.bg-red-500), .dark i:not(.text-red-500), .dark div,
+        [data-theme="dark"] nav a, [data-theme="dark"] nav button, [data-theme="dark"] p, [data-theme="dark"] span:not(.bg-red-500), [data-theme="dark"] i:not(.text-red-500), [data-theme="dark"] div {
+            color: var(--text-color) !important;
+        }
+        /* मेनुका आइटमहरू होभर गर्दा अक्षर सेतो पार्ने फिक्स (dark mode मा मात्र) */
+        .dark .absolute a:hover,
+        .dark div[class*="shadow"] a:hover,
+        [data-theme="dark"] .absolute a:hover,
+        [data-theme="dark"] div[class*="shadow"] a:hover {
+            color: #ffffff !important;
+        }
+
+        /* Light mode मा hover गर्दा clear देखिने गाढा color */
+        .absolute a:hover,
+        div[class*="shadow"] a:hover {
+            color: #541523 !important;
+        }
+
+        /* ===== LEFT SIDE ICON RAIL (सबै page मा देखिने) ===== */
+        .icon-rail {
+            position: fixed;
+            top: var(--nav-height, 80px);
+            left: 0;
+            height: calc(100vh - var(--nav-height, 80px));
+            width: 84px;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 20px;
+            padding-left: 18px;
+            overflow: visible;
+            z-index: 30;
+        }
+
+        .icon-rail a {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 48px;
+            width: 48px;
+            border-radius: 24px;
+            overflow: hidden;
+            font-size: 22px;
+            color: #541523;
+            background-color: rgba(255,255,255,0.35);
+            text-decoration: none;
+            white-space: nowrap;
+            transition: width 0.25s ease, background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+        }
+
+        .icon-rail a i {
+            flex-shrink: 0;
+            width: 48px;
+            text-align: center;
+        }
+
+        .icon-rail a .rail-label {
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: max-width 0.25s ease, opacity 0.2s ease;
+        }
+
+        .dark .icon-rail a, [data-theme="dark"] .icon-rail a {
+            background-color: rgba(255,255,255,0.06);
+            color: #FAF6EE;
+        }
+
+        .icon-rail a:hover {
+            width: 172px;
+            background-color: #541523;
+            color: #ffffff !important;
+            box-shadow: 0 6px 16px rgba(74,21,33,0.25);
+            z-index: 60;
+        }
+
+        .icon-rail a:hover .rail-label {
+            max-width: 120px;
+            opacity: 1;
+            padding-right: 16px;
+        }
+
+        .icon-rail a.active {
+            background-color: #541523;
+            color: #ffffff !important;
+        }
+
+        /* click-to-expand rail (all labels visible, toggled from the MiniMedia logo) */
+        @media (min-width: 769px) {
+            .icon-rail {
+                transition: width 0.25s ease;
+            }
+            .content-shift {
+                transition: margin-left 0.25s ease;
+            }
+            body.rail-expanded .icon-rail {
+                width: 210px;
+                background-color: var(--nav-bg);
+                box-shadow: 2px 0 12px rgba(0,0,0,0.06);
+            }
+            body.rail-expanded .icon-rail a {
+                width: 172px;
+                background-color: var(--card-bg);
+                color: var(--text-color) !important;
+                box-shadow: 0 2px 8px rgba(74,21,33,0.08);
+                border: 1px solid var(--border-color);
+            }
+            body.rail-expanded .icon-rail a .rail-label {
+                max-width: 120px;
+                opacity: 1;
+                padding-right: 16px;
+            }
+            body.rail-expanded .content-shift {
+                margin-left: 210px;
+            }
+        }
+
+        .logo-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* push page content right so it doesn't sit under the rail */
+        .content-shift {
+            margin-left: 84px;
+        }
+
+        @media (max-width: 768px) {
+            .icon-rail {
+                width: 100%;
+                height: 64px;
+                flex-direction: row;
+                top: auto;
+                bottom: 0;
+                justify-content: space-evenly;
+                gap: 0;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+            }
+            .content-shift {
+                margin-left: 0;
+                padding-bottom: 80px;
+            }
+        }
+
+        {% block extra_style %}{% endblock %}
+    </style>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+
+        function syncNavHeight() {
+            var nav = document.getElementById('topnav');
+            if (nav) {
+                document.documentElement.style.setProperty('--nav-height', nav.offsetHeight + 'px');
+            }
+        }
+        window.addEventListener('load', syncNavHeight);
+        window.addEventListener('resize', syncNavHeight);
+
+        function toggleRail(e) {
+            e.preventDefault();
+            document.body.classList.toggle('rail-expanded');
+        }
+    </script>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="min-h-screen pb-12">
+
+    <!-- LEFT SIDE FUNCTIONAL ICON RAIL: यो सबै page मा एउटै ठाउँमा, एउटै तरिकाले देखिन्छ -->
+    <aside class="icon-rail">
+        <a href="{% url 'home' %}" title="Home" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            <i class="bi bi-house-heart-fill"></i><span class="rail-label">Home</span>
+        </a>
+
+        <a href="{% url 'notifications' %}" title="Activity" class="{% if request.resolver_match.url_name == 'notifications' %}active{% endif %}">
+            <i class="bi bi-heart-fill"></i><span class="rail-label">Activity</span>
+        </a>
+
+        <a href="{% url 'search' %}" title="Search" class="{% if request.resolver_match.url_name == 'search' %}active{% endif %}">
+            <i class="bi bi-search"></i><span class="rail-label">Search</span>
+        </a>
+
+        <a href="{% url 'create_post' %}" title="Create Post" class="{% if request.resolver_match.url_name == 'create_post' %}active{% endif %}">
+            <i class="bi bi-plus-circle-fill"></i><span class="rail-label">Create</span>
+        </a>
+
+        <a href="{% url 'profile' request.user.id %}" title="Profile" class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            <i class="bi bi-person-circle"></i><span class="rail-label">Profile</span>
+        </a>
+    </aside>
+
+    <nav id="topnav" style="background-color: var(--nav-bg);" class="sticky top-0 z-50 backdrop-blur-md border-b border-[#E4DDD3] px-6 py-3 shadow-sm flex items-center justify-between transition-colors duration-200">
+        <a href="{% url 'home' %}" onclick="toggleRail(event)" class="logo-toggle brand-font text-3xl font-bold tracking-wide italic" style="color: var(--text-color);">
+            Mini<span class="text-[#E08E9B]">Media</span>
+        </a>
+
+        <div class="flex items-center gap-5">
+            <a href="{% url 'home' %}" class="text-2xl hover:text-[#E08E9B] transition" title="Home" style="color: var(--text-color);">
+                <i class="bi bi-house-heart-fill"></i>
+            </a>
+
+            <form method="GET" action="{% url 'search' %}" class="hidden md:flex items-center">
+                <div class="relative">
+                    <input type="text" name="q" placeholder="Search users..."
+                        class="pl-10 pr-4 py-2 rounded-full border focus:outline-none focus:ring-2 focus:ring-[#E08E9B] w-64 text-sm"
+                        style="background-color: var(--input-bg); border-color: var(--border-color); color: var(--text-color);">
+                    <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </form>
+            
+            <a href="{% url 'create_post' %}"
+                class="bg-[#E08E9B] text-white px-4 py-2 rounded-full font-bold text-sm hover:bg-[#c97b87] transition shadow-sm flex items-center gap-1 dark:bg-[#E08E9B] dark:hover:bg-[#c97b87]">
+                <i class="bi bi-plus-circle-fill"></i> Create
+            </a>
+
+            <a href="{% url 'notifications' %}" class="text-2xl hover:text-red-500 transition relative" title="Notifications" style="color: var(--text-color);">
+                <i class="bi bi-bell-fill"></i>
+                {% if notifications %}
+                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                {% endif %}
+            </a>
+            <div class="h-5 w-[1px] bg-gray-300 dark:bg-gray-700"></div>
+
+            <div class="relative">
+                <button onclick="toggleMenu()" class="text-2xl hover:text-[#E08E9B] transition cursor-pointer" style="color: var(--text-color);">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div id="menu" class="hidden absolute right-0 mt-3 w-60 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden dark:border-gray-800">
+                    <div class="p-4 text-center border-b border-gray-100 dark:border-gray-800">
+                        <div class="w-14 h-14 mx-auto rounded-full bg-[#E08E9B] dark:bg-[#5c2c35] flex items-center justify-center text-2xl">
+                            <i class="bi bi-person-fill" style="color: var(--text-color);"></i>
+                        </div>
+                        <p class="mt-2 font-bold text-gray-800">
+                            {{ request.user.username }}
+                        </p>
+                    </div>
+
+                    <a href="{% url 'profile' request.user.id %}" class="flex items-center gap-3 px-4 py-3 hover:bg-pink-50 dark:hover:bg-gray-800">
+                        <i class="bi bi-person-circle"></i> My Profile
+                    </a>
+
+                    <a href="{% url 'edit_profile' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-pink-50 dark:hover:bg-gray-800">
+                        <i class="bi bi-pencil-square"></i> Edit Profile
+                    </a>
+
+                    <a href="{% url 'create_post' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-pink-50 dark:hover:bg-gray-800">
+                        <i class="bi bi-plus-circle"></i> Create Post
+                    </a>
+
+                    <a href="{% url 'notifications' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-pink-50 dark:hover:bg-gray-800">
+                        <i class="bi bi-bell"></i> Notifications
+                    </a>
+
+                    <a href="#" id="dark-mode-btn" class="flex items-center gap-3 px-4 py-3 hover:bg-pink-50 dark:hover:bg-gray-800">
+                        <i class="bi bi-moon-stars"></i>
+                        <span>Dark Mode</span>
+                    </a>
+
+                    <hr class="border-gray-100 dark:border-gray-800">
+
+                    <a href="{% url 'logout' %}" class="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-shift">
+    <div class="{% block content_width %}max-w-md mx-auto{% endblock %} mt-8 px-4 space-y-8">
+
+        {% if messages %}
+        <div id="flash-message-container" class="fixed top-20 right-5 z-50 space-y-2">
+            {% for message in messages %}
+            <div class="flash-message p-4 rounded-xl bg-green-50 text-green-700 text-xs font-bold border border-green-200 shadow-md transition duration-500 dark:bg-green-950 dark:text-green-300 dark:border-green-900">
+                ✨ {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+
+    </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Flash message controller
+            setTimeout(function () {
+                let container = document.getElementById('flash-message-container');
+                if (container) {
+                    container.style.opacity = '0';
+                    setTimeout(() => container.remove(), 500);
+                }
+            }, 3000);
+
+            // Dark mode toggle click event listener
+            const toggleBtn = document.getElementById('dark-mode-btn');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                        document.documentElement.removeAttribute('data-theme');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                });
+            }
+        });
+
+        function toggleMenu() {
+            document.getElementById("menu").classList.toggle("hidden");
+        }
+
+        window.onclick = function (event) {
+            if (!event.target.closest("button") && !event.target.closest("#dark-mode-btn")) {
+                let menu = document.getElementById("menu");
+                if (menu) {
+                    menu.classList.add("hidden");
+                }
+            }
+        }
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>
