@@ -224,10 +224,21 @@ def follow_user(request, user_id):
 
 # --- SEARCH USERS ---
 @login_required
+
 def search_user(request):
-    query = request.GET.get('q', '')
-    users = User.objects.filter(username__icontains=query) if query else []
-    return render(request, 'search.html', {'users': users, 'query': query})
+    query = request.GET.get('q', '').strip()
+
+    if query:
+        users = User.objects.filter(
+            username__istartswith=query
+        ).order_by('username')
+    else:
+        users = []
+
+    return render(request, 'search.html', {
+        'users': users,
+        'query': query,
+    })
 
 
 # --- EDIT PROFILE ---
