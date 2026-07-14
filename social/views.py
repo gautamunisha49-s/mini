@@ -174,7 +174,14 @@ def delete_comment_view(request, comment_id):
 @login_required
 def notifications_view(request):
     notifications = Notification.objects.filter(receiver=request.user).order_by('-created_at')
-    return render(request, 'notifications.html', {'notifications': notifications})
+    following_users = Follow.objects.filter(
+        follower=request.user
+    ).values_list('following_id', flat=True)
+
+    return render(request, 'notifications.html', {
+        'notifications': notifications,
+        'following_users': following_users,
+    })
 
 
 # --- PROFILE VIEW ---
@@ -212,14 +219,32 @@ def follow_user(request, user_id):
     if follow.exists():
         follow.delete()
     else:
-        Follow.objects.create(follower=request.user, following=target)
+        Follow.objects.create(
+            follower=request.user, 
+            following=target
+            )
         Notification.objects.create(
             sender=request.user,
             receiver=target,
-            message=f"{request.user.username} started following you."
+            message="Started following you."
         )
 
     return redirect('profile', user_id=user_id)
+@login_required
+def follow_back(request, user_id):
+    target = get_object_or_404(User, id=user_id)
+
+    # Don't allow following yourself
+    if request.user == target:
+        return redirect('notifications')
+
+    # Create follow only if it doesn't already exist
+    Follow.objects.get_or_create(
+        follower=request.user,
+        following=target
+    )
+
+    return redirect('notifications')
 
 
 # --- SEARCH USERS ---

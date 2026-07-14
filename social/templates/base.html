@@ -211,8 +211,27 @@
                 padding-bottom: 80px;
             }
         }
+        .notification-profile{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+    display:block;
+}
 
-        {% block extra_style %}{% endblock %}
+.initial-circle{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#E08E9B;
+    color:white;
+    font-weight:bold;
+    font-size:20px;
+}
+
+{% block extra_style %}{% endblock %}
     </style>
 
     <script>
@@ -257,10 +276,21 @@
         <a href="{% url 'create_post' %}" title="Create Post" class="{% if request.resolver_match.url_name == 'create_post' %}active{% endif %}">
             <i class="bi bi-plus-circle-fill"></i><span class="rail-label">Create</span>
         </a>
+<a href="{% url 'profile' request.user.id %}" title="Profile"
+   class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
 
-        <a href="{% url 'profile' request.user.id %}" title="Profile" class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
-            <i class="bi bi-person-circle"></i><span class="rail-label">Profile</span>
-        </a>
+    {% if request.user.profile.profile_picture %}
+        <img src="{{ request.user.profile.profile_picture.url }}"
+             class="w-10 h-10 rounded-full object-cover">
+    {% else %}
+        <div class="w-10 h-10 rounded-full bg-[#E08E9B] flex items-center justify-center font-bold text-white">
+            {{ request.user.username|first|upper }}
+        </div>
+    {% endif %}
+
+    <span class="rail-label">Profile</span>
+</a>
+
     </aside>
 
     <nav id="topnav" style="background-color: var(--nav-bg);" class="sticky top-0 z-50 backdrop-blur-md border-b border-[#E4DDD3] px-6 py-3 shadow-sm flex items-center justify-between transition-colors duration-200">
@@ -302,9 +332,21 @@
 
                 <div id="menu" class="hidden absolute right-0 mt-3 w-60 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden dark:border-gray-800">
                     <div class="p-4 text-center border-b border-gray-100 dark:border-gray-800">
-                        <div class="w-14 h-14 mx-auto rounded-full bg-[#E08E9B] dark:bg-[#5c2c35] flex items-center justify-center text-2xl">
-                            <i class="bi bi-person-fill" style="color: var(--text-color);"></i>
-                        </div>
+
+                        <div class="w-14 h-14 mx-auto rounded-full overflow-hidden border-2 border-[#E08E9B]">
+
+    {% if request.user.profile.profile_picture %}
+
+        <img src="{{ request.user.profile.profile_picture.url }}"
+             class="w-full h-full object-cover">
+
+    {% else %}
+
+        <div class="w-full h-full flex items-center justify-center bg-[#E08E9B] text-xl font-bold">
+            {{ request.user.username|first|upper }}
+        </div>
+    {% endif %}
+</div>
                         <p class="mt-2 font-bold text-gray-800">
                             {{ request.user.username }}
                         </p>

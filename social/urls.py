@@ -24,4 +24,5 @@ urlpatterns = [
     path('search/', views.search_user, name='search'),
     path('follow/<int:user_id>/', views.follow_user, name='follow'),
     path('toggle-dark-mode/', views.toggle_dark_mode, name='dark_mode'),
+    path('follow-back/<int:user_id>/', views.follow_back, name ='follow_back'),
 ]
