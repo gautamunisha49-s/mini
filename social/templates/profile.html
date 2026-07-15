@@ -70,12 +70,12 @@
         margin-top: 20px;
     }
 
-    .stats div h3 {
+    .stats > * h3 {
         font-size: 20px;
         color: var(--text-color);
     }
 
-    .stats div p {
+    .stats > * p {
         font-size: 14px;
         color: var(--text-color);
         opacity: 0.7;
@@ -106,6 +106,18 @@
 
     .profile-btn:active {
         transform: scale(0.98);
+    }
+
+    .stats a {
+        text-decoration: none;
+        display: block;
+        border-radius: 12px;
+        padding: 4px 10px;
+        transition: background 0.15s ease;
+    }
+
+    .stats a:hover {
+        background: rgba(224,142,155,0.12);
     }
 
     .posts-title {
@@ -182,14 +194,14 @@
         {% endif %}
 
         <div class="stats">
-            <div>
+            <a href="{% url 'followers_list' profile_user.id %}">
                 <h3>{{ followers_count }}</h3>
                 <p>Followers</p>
-            </div>
-            <div>
+            </a>
+            <a href="{% url 'following_list' profile_user.id %}">
                 <h3>{{ following_count }}</h3>
                 <p>Following</p>
-            </div>
+            </a>
         </div>
 
         <div class="actions">

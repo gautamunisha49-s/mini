@@ -25,4 +25,9 @@ urlpatterns = [
     path('follow/<int:user_id>/', views.follow_user, name='follow'),
     path('toggle-dark-mode/', views.toggle_dark_mode, name='dark_mode'),
     path('follow-back/<int:user_id>/', views.follow_back, name ='follow_back'),
+
+    path('profile/<int:user_id>/followers/', views.followers_list_view, name='followers_list'),
+    path('profile/<int:user_id>/following/', views.following_list_view, name='following_list'),
+
+    path('notification/<int:notification_id>/delete/', views.delete_notification_view, name='delete_notification'),
 ]

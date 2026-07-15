@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ list_title }} • {{ profile_user.username }}{% endblock %}
+
+{% block content_width %}max-w-md mx-auto{% endblock %}
+
+{% block extra_style %}
+    .fl-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .fl-back {
+        color: var(--text-color);
+        text-decoration: none;
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        transition: background 0.15s ease;
+        flex-shrink: 0;
+    }
+
+    .fl-back:hover {
+        background: rgba(0,0,0,0.06);
+    }
+
+    .dark .fl-back:hover, [data-theme="dark"] .fl-back:hover {
+        background: rgba(255,255,255,0.08);
+    }
+
+    .fl-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text-color);
+    }
+
+    .fl-title span {
+        opacity: 0.6;
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .fl-list {
+        background: var(--card-bg);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    }
+
+    .fl-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border-color);
+        text-decoration: none;
+        color: var(--text-color);
+        transition: background 0.15s ease;
+    }
+
+    .fl-item:last-child {
+        border-bottom: none;
+    }
+
+    .fl-item:hover {
+        background: rgba(224,142,155,0.08);
+    }
+
+    .fl-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+    }
+
+    .fl-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 2px solid #E08E9B;
+        background: var(--card-bg);
+    }
+
+    .fl-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .fl-avatar .fl-initial {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 20px;
+        color: var(--text-color);
+    }
+
+    .fl-name {
+        font-weight: 700;
+        font-size: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .fl-sub {
+        font-size: 12px;
+        opacity: 0.6;
+        margin-top: 2px;
+    }
+
+    .fl-chevron {
+        font-size: 18px;
+        color: #E08E9B;
+        flex-shrink: 0;
+    }
+
+    .fl-empty {
+        text-align: center;
+        padding: 50px 20px;
+        color: var(--text-color);
+        opacity: 0.7;
+    }
+
+    .fl-empty i {
+        font-size: 40px;
+        color: #E08E9B;
+        display: block;
+        margin-bottom: 12px;
+    }
+{% endblock %}
+
+{% block content %}
+
+    <div class="fl-header">
+        <a href="{% url 'profile' profile_user.id %}" class="fl-back">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div class="fl-title">
+            {{ list_title }} <span>· {{ profile_user.username }}</span>
+        </div>
+    </div>
+
+    <div class="fl-list">
+        {% for person in people %}
+        <a href="{% url 'profile' person.id %}" class="fl-item">
+            <div class="fl-left">
+                <div class="fl-avatar">
+                    {% if person.profile.profile_picture %}
+                    <img src="{{ person.profile.profile_picture.url }}" alt="{{ person.username }}">
+                    {% else %}
+                    <div class="fl-initial">{{ person.username|first|upper }}</div>
+                    {% endif %}
+                </div>
+                <div>
+                    <div class="fl-name">{{ person.username }}</div>
+                    {% if person.id in my_following_ids and person != request.user %}
+                    <div class="fl-sub">Following</div>
+                    {% endif %}
+                </div>
+            </div>
+            <i class="bi bi-chevron-right fl-chevron"></i>
+        </a>
+        {% empty %}
+        <div class="fl-empty">
+            <i class="bi bi-people"></i>
+            <p>
+                {% if list_title == 'Followers' %}
+                No followers yet.
+                {% else %}
+                Not following anyone yet.
+                {% endif %}
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

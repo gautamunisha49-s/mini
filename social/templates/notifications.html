@@ -106,11 +106,16 @@
 .following-btn {
     background: #d1d5db;
     color: #444;
+    text-decoration: none;
     padding: 8px 18px;
     border-radius: 8px;
     font-weight: 600;
     float: right;
-    cursor: default;
+    cursor: pointer;
+}
+
+.following-btn:hover {
+    opacity: 0.85;
 }
 
 .dark .follow-btn,
@@ -124,6 +129,23 @@
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+.notification-delete {
+    color: var(--text-color);
+    opacity: 0.4;
+    font-size: 16px;
+    text-decoration: none;
+    flex-shrink: 0;
+    padding: 6px;
+    border-radius: 50%;
+    transition: opacity 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.notification-delete:hover {
+    opacity: 1;
+    color: #E53935;
+    background: rgba(229,57,53,0.1);
 }
 
 .initial-circle {
@@ -195,9 +217,9 @@
     {% if "following you" in n.message %}
     
     {% if n.sender.id in following_users %}
-        <span class="following-btn">
+        <a href="{% url 'follow_back' n.sender.id %}" class="following-btn" title="Click to unfollow">
             Following
-        </span>
+        </a>
     {% else %}
         <a href="{% url 'follow_back' n.sender.id %}"
            class="follow-btn">
@@ -209,6 +231,10 @@
 
 </div>
 </div>
+
+<a href="{% url 'delete_notification' n.id %}" class="notification-delete" title="Delete notification" onclick="return confirm('Delete this notification?');">
+    <i class="bi bi-trash3"></i>
+</a>
 </div>
         {% empty %}
         <div class="empty">

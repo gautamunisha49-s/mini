@@ -218,6 +218,12 @@ def follow_user(request, user_id):
 
     if follow.exists():
         follow.delete()
+        # maile pathaeko "started following you" notification pani hataune
+        Notification.objects.filter(
+            sender=request.user,
+            receiver=target,
+            message__icontains="following you"
+        ).delete()
     else:
         Follow.objects.create(
             follower=request.user, 
@@ -230,6 +236,8 @@ def follow_user(request, user_id):
         )
 
     return redirect('profile', user_id=user_id)
+
+
 @login_required
 def follow_back(request, user_id):
     target = get_object_or_404(User, id=user_id)
@@ -238,13 +246,67 @@ def follow_back(request, user_id):
     if request.user == target:
         return redirect('notifications')
 
-    # Create follow only if it doesn't already exist
-    Follow.objects.get_or_create(
-        follower=request.user,
-        following=target
-    )
+    follow = Follow.objects.filter(follower=request.user, following=target)
+    print(follow)
+    if follow.exists():
+        # already following -> yo click le unfollow garcha (toggle)
+        follow.delete()
+        Notification.objects.filter(
+            sender=request.user,
+            receiver=target,
+            message__icontains="following you"
+        ).delete()
+    else:
+        Follow.objects.create(
+            follower=request.user,
+            following=target
+        )
+        Notification.objects.create(
+            sender=request.user,
+            receiver=target,
+            message="Started following you."
+        )
 
     return redirect('notifications')
+
+
+# --- FOLLOWERS / FOLLOWING LIST ---
+@login_required
+def followers_list_view(request, user_id):
+    profile_user = get_object_or_404(User, id=user_id)
+
+    follows = Follow.objects.filter(following=profile_user).select_related('follower')
+    people = [f.follower for f in follows]
+
+    my_following_ids = set(
+        Follow.objects.filter(follower=request.user).values_list('following_id', flat=True)
+    )
+
+    return render(request, 'follow_list.html', {
+        'profile_user': profile_user,
+        'people': people,
+        'list_title': 'Followers',
+        'my_following_ids': my_following_ids,
+    })
+
+
+@login_required
+def following_list_view(request, user_id):
+    profile_user = get_object_or_404(User, id=user_id)
+
+    follows = Follow.objects.filter(follower=profile_user).select_related('following')
+    people = [f.following for f in follows]
+
+    my_following_ids = set(
+        Follow.objects.filter(follower=request.user).values_list('following_id', flat=True)
+    )
+
+    return render(request, 'follow_list.html', {
+        'profile_user': profile_user,
+        'people': people,
+        'list_title': 'Following',
+        'my_following_ids': my_following_ids,
+    })
 
 
 # --- SEARCH USERS ---
@@ -291,3 +353,17 @@ def toggle_dark_mode(request):
     # HTTP_REFERER (user कुन page बाट आएको हो त्यहीँ फिर्ता पठाउने)
     response = HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     return response
+
+
+# --- DELETE NOTIFICATION ---
+@login_required
+def delete_notification_view(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id)
+
+    if notification.receiver == request.user:
+        notification.delete()
+        messages.success(request, "Notification deleted.")
+    else:
+        messages.error(request, "You cannot delete this notification.")
+
+    return redirect('notifications') 
